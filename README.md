@@ -33,3 +33,36 @@
   "scripts": {
     "start": "nodemon --exec ts-node src/index.ts"
   },
+
+
+# Install Packages 
+1. npm install @prisma/client
+2. npm install --save-dev prisma typescript ts-node @types/node
+
+# Initialize Prisma
+npx prisma init
+
+# Configure PostgreSQL Connection
+DATABASE_URL="postgresql://postgres:root@localhost:5432/ecart?schema=public"
+
+
+# Define Schema
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+# Run Migration
+npx prisma migrate dev --name init
+
+# Create Prisma Client File
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
+export default prisma;
+
+# Run Prisma Studio (optional GUI)
+npx prisma studio
