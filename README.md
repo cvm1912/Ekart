@@ -58,6 +58,7 @@ generator client {
 
 # Run Migration
 npx prisma migrate dev --name init
+npx prisma generate
 
 # Create Prisma Client File
 import { PrismaClient } from "@prisma/client";
@@ -78,3 +79,13 @@ src -|
      |--> utils
      |--> controller
      |--> routes 
+
+
+# Install BCRYPT 
+use for password hashing 
+npm install bcrypt @types/bcrypt
+
+# Install JSONWEBTOKEN
+npm install jsonwebtoken @types/jsonwebtoken
+
+1. create a function to hash the password 
