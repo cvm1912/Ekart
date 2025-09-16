@@ -66,3 +66,15 @@ export default prisma;
 
 # Run Prisma Studio (optional GUI)
 npx prisma studio
+
+
+# folder structure 
+
+src -|
+     |--> server.js 
+     |--> app.js
+     |--> middleware
+     |--> config
+     |--> utils
+     |--> controller
+     |--> routes 
