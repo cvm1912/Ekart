@@ -21,6 +21,7 @@
   "devDependencies": {
     "@types/express": "^5.0.3",
     "@types/node": "^24.5.0",
+    "@types/nodemailer": "^7.0.1",
     "nodemon": "^3.1.10",
     "prisma": "^6.16.1",
     "ts-node": "^10.9.2",

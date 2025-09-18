@@ -2,14 +2,16 @@ import {Request, Response} from 'express';
 import prisma from '../Config/prisma';
 import {hashPassword, comparePassword} from '../Utils/hasing'
 import {generateToken} from '../Utils/jwt';
+import {generateOTP,getOtpExpiry} from '../Utils/otp'
+import {sendMail} from '../Utils/mailer'
 
 export const Register = async (req: Request, res: Response) =>{
     
      const body = req.body || {};
-     const { name, email, password } = body;
+     const { name, email, password, role} = body;
 
-     if(!name || !email || !password){
-        return res.status(400).json({message: "name, email and password are required"});
+     if(!name || !email || !password || !role){
+        return res.status(400).json({message: "name, email, password and role are required"});
      }
 
     const adminExists = await prisma.user.findUnique({where:{email}})
@@ -25,9 +27,9 @@ export const Register = async (req: Request, res: Response) =>{
         data:{
             name,
             email,
-            passwordHash: hashedPassword
+            passwordHash: hashedPassword,
+            role: role
         }
-
     })
 
     // generate token
@@ -39,7 +41,87 @@ export const Register = async (req: Request, res: Response) =>{
             id: newAdmin.id,
             name: newAdmin.name,    
             email: newAdmin.email,
+            role: newAdmin.role,    
             token
         }
     });
+}
+
+
+export const Login = async(req: Request, res:Response)=>{
+    const body = req.body || {};
+    const {email, password, role} = body;
+
+    if(!email || !password || !role){
+        return res.status(400).json({message: "email, password and role are required"});
+    }
+
+    const admin = await prisma.user.findUnique({where:{email}})
+    if(!admin){
+        return res.status(400).json({message: "Admin with this email does not exist"});
+    }
+
+    // compare password
+    if (!admin.passwordHash) {
+        return res.status(400).json({message: "Invalid user data"});
+    }
+
+    const isPasswordValid = await comparePassword(password, admin.passwordHash);
+    if(!isPasswordValid){
+        return res.status(400).json({message: "Incorrect password"});
+    }
+
+    // genereate Token 
+    const token = generateToken(admin.id, admin.role);
+
+     return res.status(200).json({
+        message: "Admin logged in successfully",
+        admin: {
+            id: admin.id,
+            name: admin.name,    
+            email: admin.email,
+            token
+        }
+    });
+}
+
+
+export const sendResetOTP = async (req: Request, res: Response)=>{
+    const body = req.body || {};
+    const { email } = body;
+
+    if (!email) {
+        return res.status(400).json({ message: "email is required" });
+    }
+
+    // check if admin exists
+    const admin = await prisma.user.findUnique({
+        where: { email }
+    });
+
+    if(!admin){
+        return res.status(400).json({message: "Admin with this email does not exist"});
+    }
+
+    // Generate OTP
+    const otp =  generateOTP();
+    const otpExpiry = getOtpExpiry(2); // OTP valid for 2 minutes
+
+    // Store OTP in database
+    await prisma.oTP.create({
+        data: {
+            target: email,
+            codeHash: await hashPassword(otp),
+            purpose: 'PASSWORD_RESET',
+            expiresAt: otpExpiry,
+            userId: admin.id
+        }
+    });
+
+    await sendMail(email,
+    "Admin Password Reset OTP",
+    `Your OTP for resetting your password is ${otp}. It expires in 2 minutes.`
+  );
+
+  res.status(200).json({ message: "OTP sent successfully" },);
 }
