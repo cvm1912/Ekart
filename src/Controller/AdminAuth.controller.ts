@@ -166,3 +166,33 @@ export const verifyOTP = async (req: Request, res: Response)=>{
     return res.status(200).json({ message: "OTP verified successfully" });
 
 }
+
+export const resetPassword = async (req: Request, res: Response) => {
+    const body = req.body || {};
+    const { email, newPassword } = body;
+    if (!email || !newPassword) {
+        return res.status(400).json({ message: "email and newPassword are required" });
+    }
+
+    // check if admin exists
+    const admin = await prisma.user.findUnique({
+        where: { email }
+    });
+    if (!admin) {
+        return res.status(400).json({ message: "Admin with this email does not exist" });
+    }
+
+    // hash new password
+    const hashedPassword = await hashPassword(newPassword);
+
+    // update password in database
+    await prisma.user.update({
+        where: { email },
+        data: { passwordHash: hashedPassword }
+    });
+
+    res.status(200).json({ message: "Password reset successfully" });
+}
+
+
+
