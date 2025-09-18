@@ -125,3 +125,44 @@ export const sendResetOTP = async (req: Request, res: Response)=>{
 
   res.status(200).json({ message: "OTP sent successfully" },);
 }
+
+export const verifyOTP = async (req: Request, res: Response)=>{
+    const body = req.body || {}
+    const {email, otp} = body;
+
+    if(!email || !otp){
+        return res.status(400).json({message: "email and otp are required"});
+    }
+
+    const existingOTP = await prisma.oTP.findFirst({
+        where: {
+            target: email,
+            purpose: 'PASSWORD_RESET',
+            consumed: false,
+            expiresAt: {
+                gte: new Date()
+            }
+        }
+    });
+
+    if(!existingOTP){
+        return res.status(400).json({message: "Invalid email or OTP"});
+    }
+
+    // Verify OTP
+    const isOtpValid = await comparePassword(otp, existingOTP.codeHash);
+    if(!isOtpValid){
+       return res.status(400).json({ message: "Invalid OTP" });
+    }
+
+    // Mark OTP as consumed
+    await prisma.oTP.update({
+        where: { id: existingOTP.id },
+        data: {
+            consumed: true
+        }
+    });
+
+    return res.status(200).json({ message: "OTP verified successfully" });
+
+}
