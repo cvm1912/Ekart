@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import prisma from '../Config/prisma';
+import prisma from '../config/prisma';
 import {hashPassword, comparePassword} from '../Utils/hasing'
 import {generateToken} from '../Utils/jwt';
 import {generateOTP,getOtpExpiry} from '../Utils/otp'
