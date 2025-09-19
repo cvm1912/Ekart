@@ -4,7 +4,8 @@
   "description": "1. npm init -y",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec ts-node src/server.ts"
+    "start": "nodemon --exec ts-node src/server.ts",
+    "generateDocs": "ts-node src/config/swagger.ts"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,7 @@
     "@types/nodemailer": "^7.0.1",
     "nodemon": "^3.1.10",
     "prisma": "^6.16.1",
+    "swagger-autogen": "^2.23.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   },
@@ -34,6 +36,7 @@
     "bcrypt": "^6.0.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "nodemailer": "^7.0.6"
+    "nodemailer": "^7.0.6",
+    "swagger-ui-express": "^5.0.1"
   }
 }

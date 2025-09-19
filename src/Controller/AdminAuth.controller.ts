@@ -1,5 +1,6 @@
 import {Request, Response} from 'express';
 import prisma from '../config/prisma';
+import {Role} from '../generated/prisma';
 import {hashPassword, comparePassword} from '../Utils/hasing'
 import {generateToken} from '../Utils/jwt';
 import {generateOTP,getOtpExpiry} from '../Utils/otp'
@@ -13,6 +14,10 @@ export const Register = async (req: Request, res: Response) =>{
      if(!name || !email || !password || !role){
         return res.status(400).json({message: "name, email, password and role are required"});
      }
+
+    if (!Object.values(Role).includes(role)) {
+     return res.status(400).json({ message: "Invalid role. Must be BUYER, SELLER, or ADMIN" });
+   }
 
     const adminExists = await prisma.user.findUnique({where:{email}})
     if(adminExists){
