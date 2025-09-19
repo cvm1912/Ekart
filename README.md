@@ -16,4 +16,12 @@
    * GOOGLE_MAPS_API_KEY=your_api_key_here
 
 
+# ADD PRISMA ORM
 
+model Location {
+  id        String   @id @default(uuid()) // Unique ID
+  name      String   // Name of the location (e.g. "Delhi Office")
+  latitude  Float    // Latitude (e.g. 28.6139)
+  longitude Float    // Longitude (e.g. 77.2090)
+  createdAt DateTime @default(now())
+}

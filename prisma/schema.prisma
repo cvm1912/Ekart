@@ -83,3 +83,10 @@ model RefreshToken {
 }
 
 
+model Location {
+  id        String   @id @default(uuid()) // Unique ID
+  name      String   // Name of the location (e.g. "Delhi Office")
+  latitude  Float    // Latitude (e.g. 28.6139)
+  longitude Float    // Longitude (e.g. 77.2090)
+  createdAt DateTime @default(now())
+}
