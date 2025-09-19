@@ -1,27 +1,3 @@
-# Node mailer 
-npm i --save-dev @types/nodemailer
-
-
-
-# Config 
-
-1.  Generate 6-digit OTP
-2.  Get OTP expiry time (2 min)
-3.  Generate Token
-4.  Hash Password
-5.  Compare With HashPassword
-
-
-# twillio 
-
-npm install twilio
-npm install @types/twilio
-
-
-# Add Twilio Configuration to env 
-TWILIO_ACCOUNT_SID
-TWILIO_AUTH_TOKEN
-TWILIO_PHONE_NUMBER
 
 
 # Enable Google Maps API & Get API Key
