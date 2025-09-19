@@ -3,6 +3,7 @@ import prisma from "../config/prisma";
 import { hashPassword } from "../Utils/hasing";
 import { generateOTP, getOtpExpiry } from "../Utils/otp";
 import { sendMail } from "../Utils/mailer";
+import { twilioClient, TWILIO_PHONE_NUMBER } from "../config/twillio";
 import bcrypt from "bcrypt";
 
 
@@ -103,3 +104,11 @@ export const UserVerify = async(Req:Request, Res: Response)=>{
         userId: user.id
     });
 }
+
+
+
+
+
+
+
+

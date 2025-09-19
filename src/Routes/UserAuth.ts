@@ -1,4 +1,4 @@
-import {UserRegister, UserVerify} from '../Controller/UserAuth.controller'
+import {UserRegister, UserVerify } from '../Controller/UserAuth.controller'
 import {Router} from 'express'
 
 const router = Router();
@@ -29,7 +29,6 @@ router.post('/verify',
         }
     } */
     UserVerify)
-
 
 
 export default router;
